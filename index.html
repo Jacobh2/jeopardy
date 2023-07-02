@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeopardy!</title>
+    <style>
+        *,
+        *:before,
+        *:after {
+            box-sizing: border-box;
+        }
+
+        .board {
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .row {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+        }
+
+        .tile {
+            top: 0;
+            bottom: 0;
+            flex: 1;
+            width: 100%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            transition: font-size ease-in 0.8s;
+
+            font-size: 3.5vw;
+            font-family: impact;
+            color: rgb(240, 180, 90);
+            background: linear-gradient(to top left, #000088, #0000ff);
+            border: 3px solid #000;
+        }
+
+        .category{
+            color: white;
+        }
+
+
+        .question-value {
+            display: block;
+        }
+
+        .question-answer {
+            display: none;
+        }
+
+        .question-question {
+            display: none;
+        }
+
+        .tile.active {
+            border-width: 0;
+            font-size: 10vw;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            right: 0px;
+            z-index: 5;
+
+
+            .question-value {
+                display: none;
+            }
+
+            .question-answer {
+                display: block;
+            }
+
+            .question-question {
+                display: none;
+            }
+        }
+
+        .tile.active.question {
+            border-width: 0;
+            font-size: 10vw;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            right: 0px;
+            z-index: 5;
+
+
+            .question-value {
+                display: none;
+            }
+
+            .question-answer {
+                display: none;
+            }
+
+            .question-question {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="board"></div>
+
+    <script>
+        const categories = ["Category 1", "Category 2", "Category 3", "Category 4"]
+        const values = [200, 400, 600, 800];
+
+        const answersFirstRow = [
+            "Answer for C1 Q1",
+            "Answer for C2 Q1",
+            "Answer for C3 Q1",
+            "Answer for C4 Q1",
+        ];
+
+        const questionsFirstRow = [
+            "Question for C1 Q1",
+            "Question for C2 Q1",
+            "Question for C3 Q1",
+            "Question for C4 Q1",
+        ];
+
+        const answersSecondRow = [
+            "Answer for C1 Q2",
+            "Answer for C2 Q2",
+            "Answer for C3 Q2",
+            "Answer for C4 Q2",
+        ];
+
+        const questionsSecondRow = [
+            "Question for C1 Q2",
+            "Question for C2 Q2",
+            "Question for C3 Q2",
+            "Question for C4 Q2",
+        ];
+
+        const answersThirdRow = [
+            "Answer for C1 Q3",
+            "Answer for C2 Q3",
+            "Answer for C3 Q3",
+            "Answer for C4 Q3",
+        ];
+
+        const questionsThirdRow = [
+            "Question for C1 Q3",
+            "Question for C2 Q3",
+            "Question for C3 Q3",
+            "Question for C4 Q3",
+        ];
+
+        const answersFourthRow = [
+            "Answer for C1 Q4",
+            "Answer for C2 Q4",
+            "Answer for C3 Q4",
+            "Answer for C4 Q4",
+        ];
+
+        const questionsFourthRow = [
+            "Question for C1 Q4",
+            "Question for C2 Q4",
+            "Question for C3 Q4",
+            "Question for C4 Q4",
+        ];
+
+        const answers = [answersFirstRow, answersSecondRow, answersThirdRow, answersFourthRow];
+        const questions = [questionsFirstRow, questionsSecondRow, questionsThirdRow, questionsFourthRow];
+
+
+        const container = document.getElementsByClassName("board").item(0);
+
+        //Setup the categories
+        const categoryRowElement = document.createElement("div");
+        categoryRowElement.classList.add("row", "categories");
+        for (var i = 0; i < 4; i++) {
+            const category = document.createElement("div");
+            category.classList.add("tile", "category");
+            category.textContent = categories[i];
+            categoryRowElement.appendChild(category);
+        }
+        container.appendChild(categoryRowElement);
+
+        for (var i = 0; i < 4; i++) {
+            
+            //Create one row for each category
+            const rowElement = document.createElement("div");
+            console.log("Row", i, " - creating", rowElement);
+            rowElement.classList.add("row", "clues");
+
+            for (var j = 0; j < 4; j++){
+                const tile = document.createElement("div");
+                tile.classList.add("tile");
+                tile.onclick = function() {
+                    if (this.classList.contains("question")){
+                        // Remove both question & active
+                        this.classList.remove("question");
+                        this.classList.remove("active");
+                        // We need to set this as 'clicked'
+                        var value = this.getElementsByClassName("question-value").item(0)
+                        value.innerHTML = ""
+                    } else if (this.classList.contains("active")){
+                        // We are showing the answer, now show the question
+                        this.classList.add("question");
+                    } else {
+                        //We have nothing, add active
+                        this.classList.add("active");
+                    }
+                }
+
+                const value = document.createElement("div");
+                value.classList.add("question-value")
+                value.textContent = values[i];
+                tile.appendChild(value);
+
+                const answer = document.createElement("div");
+                answer.classList.add("question-answer")
+                answer.textContent = answers[i][j];
+                tile.appendChild(answer);
+
+                const question = document.createElement("div");
+                question.classList.add("question-question")
+                question.textContent = questions[i][j];
+                tile.appendChild(question);
+
+                rowElement.appendChild(tile);
+            }
+            container.appendChild(rowElement);
+
+        }
+    </script>
+</body>
+
+</html>
